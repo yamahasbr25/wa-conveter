@@ -5,75 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SBR GENENG - WhatsApp Converter</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin-bottom: 5px;
-            color: #34495e;
-            font-weight: 500;
-        }
-
-        input, textarea {
-            padding: 8px;
-            border: 1px solid #bdc3c7;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        button {
-            background-color: #27ae60;
+        /* Previous CSS tetap sama */
+        /* Tambahan style untuk tombol copy */
+        #copyBtn {
+            background-color: #2980b9;
             color: white;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            width: 100%;
+            margin-top: 10px;
+            display: none;
             transition: background-color 0.3s;
         }
 
-        button:hover {
-            background-color: #219a52;
+        #copyBtn:hover {
+            background-color: #2472a4;
         }
 
-        #output {
-            white-space: pre-wrap;
-            margin-top: 20px;
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
             padding: 15px;
-            background-color: #f8f9fa;
             border-radius: 5px;
             display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { right: -300px; }
+            to { right: 20px; }
         }
     </style>
 </head>
@@ -81,7 +45,7 @@
     <div class="container">
         <h1>SBR GENENG - WhatsApp Converter</h1>
         
-        <form id="converterForm" onsubmit="generateOutput(event)">
+       <form id="converterForm" onsubmit="generateOutput(event)">
             <div class="form-grid">
                 <div class="input-group">
                     <label>Nama Konsumen:</label>
@@ -132,6 +96,9 @@
         </form>
 
         <div id="output"></div>
+    </div>
+        
+        <div id="output"></div>
         <button id="copyBtn" onclick="copyOutput()">Salin Hasil</button>
         <div class="notification" id="copyNotification">Teks berhasil disalin! 👍</div>
     </div>
@@ -146,21 +113,21 @@
 
             const outputText = `SBR GENENG:
 
-        **Data Konsumen**
-        Nama Konsumen: ${data.namaKonsumen}
-        Nama Pas / Penj: ${data.namaPasangan}
-        Pekerjaan: ${data.pekerjaan}
-        Alamat: ${data.alamat}
-        No HP: ${data.noHP}
-        
-        **Data Kendaraan**
-        Type Motor: ${data.typeMotor}
-        OTR: ${Number(data.otr).toLocaleString()}
-        DP: ${Number(data.dp).toLocaleString()}
-        Tenor: ${data.tenor} bulan
-        Angsuran: ${Number(data.angsuran).toLocaleString()}
-        
-        Ket: ${data.keterangan}`;
+**Data Konsumen**
+Nama Konsumen: ${data.namaKonsumen}
+Nama Pas / Penj: ${data.namaPasangan}
+Pekerjaan: ${data.pekerjaan}
+Alamat: ${data.alamat}
+No HP: ${data.noHP}
+
+**Data Kendaraan**
+Type Motor: ${data.typeMotor}
+OTR: ${Number(data.otr).toLocaleString()}
+DP: ${Number(data.dp).toLocaleString()}
+Tenor: ${data.tenor} bulan
+Angsuran: ${Number(data.angsuran).toLocaleString()}
+
+Ket: ${data.keterangan}`;
 
             const outputDiv = document.getElementById('output');
             outputDiv.textContent = outputText;
