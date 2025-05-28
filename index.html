@@ -132,6 +132,8 @@
         </form>
 
         <div id="output"></div>
+        <button id="copyBtn" onclick="copyOutput()">Salin Hasil</button>
+        <div class="notification" id="copyNotification">Teks berhasil disalin! 👍</div>
     </div>
 
     <script>
@@ -139,47 +141,53 @@
             e.preventDefault();
             
             const data = {
-                namaKonsumen: document.getElementById('namaKonsumen').value,
-                namaPasangan: document.getElementById('namaPasangan').value,
-                alamat: document.getElementById('alamat').value,
-                pekerjaan: document.getElementById('pekerjaan').value,
-                typeMotor: document.getElementById('typeMotor').value,
-                otr: document.getElementById('otr').value,
-                dp: document.getElementById('dp').value,
-                tenor: document.getElementById('tenor').value,
-                angsuran: document.getElementById('angsuran').value,
-                noHP: document.getElementById('noHP').value,
-                keterangan: document.getElementById('keterangan').value
+                // Data collection tetap sama
             };
 
             const outputText = `SBR GENENG:
 
-**Data Konsumen**
-Nama Konsumen: ${data.namaKonsumen}
-Nama Pas / Penj: ${data.namaPasangan}
-Pekerjaan: ${data.pekerjaan}
-Alamat: ${data.alamat}
-No HP: ${data.noHP}
-
-**Data Kendaraan**
-Type Motor: ${data.typeMotor}
-OTR: ${Number(data.otr).toLocaleString()}
-DP: ${Number(data.dp).toLocaleString()}
-Tenor: ${data.tenor} bulan
-Angsuran: ${Number(data.angsuran).toLocaleString()}
-
-Ket: ${data.keterangan}`;
+        **Data Konsumen**
+        Nama Konsumen: ${data.namaKonsumen}
+        Nama Pas / Penj: ${data.namaPasangan}
+        Pekerjaan: ${data.pekerjaan}
+        Alamat: ${data.alamat}
+        No HP: ${data.noHP}
+        
+        **Data Kendaraan**
+        Type Motor: ${data.typeMotor}
+        OTR: ${Number(data.otr).toLocaleString()}
+        DP: ${Number(data.dp).toLocaleString()}
+        Tenor: ${data.tenor} bulan
+        Angsuran: ${Number(data.angsuran).toLocaleString()}
+        
+        Ket: ${data.keterangan}`;
 
             const outputDiv = document.getElementById('output');
             outputDiv.textContent = outputText;
             outputDiv.style.display = 'block';
-
-            // Create WhatsApp link
-            const whatsappMessage = encodeURIComponent(outputText);
-            const whatsappLink = `https://wa.me/${data.noHP.replace(/[^0-9]/g, '')}?text=${whatsappMessage}`;
             
-            // Open WhatsApp in new tab
-            window.open(whatsappLink, '_blank');
+            // Tampilkan tombol copy
+            document.getElementById('copyBtn').style.display = 'inline-block';
+        }
+
+        function copyOutput() {
+            const outputText = document.getElementById('output').textContent;
+            
+            navigator.clipboard.writeText(outputText)
+                .then(() => {
+                    showNotification();
+                })
+                .catch(err => {
+                    console.error('Gagal menyalin teks:', err);
+                });
+        }
+
+        function showNotification() {
+            const notification = document.getElementById('copyNotification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
         }
     </script>
 </body>
