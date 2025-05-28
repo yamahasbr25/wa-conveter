@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBR GENENG - WhatsApp Converter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #219a52;
+        }
+
+        #output {
+            white-space: pre-wrap;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #copyBtn {
+            background-color: #2980b9;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: none;
+            transition: background-color 0.3s;
+        }
+
+        #copyBtn:hover {
+            background-color: #2472a4;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { right: -300px; }
+            to { right: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SBR GENENG - WhatsApp Converter</h1>
+        
+        <form id="converterForm" onsubmit="generateOutput(event)">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Nama Konsumen:</label>
+                    <input type="text" id="namaKonsumen" required>
+                </div>
+                <div class="input-group">
+                    <label>Nama Pasangan/Penjamin:</label>
+                    <input type="text" id="namaPasangan" required>
+                </div>
+                <div class="input-group">
+                    <label>Alamat:</label>
+                    <textarea id="alamat" rows="2" required></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Pekerjaan:</label>
+                    <input type="text" id="pekerjaan" required>
+                </div>
+                <div class="input-group">
+                    <label>Type Motor:</label>
+                    <input type="text" id="typeMotor" required>
+                </div>
+                <div class="input-group">
+                    <label>OTR:</label>
+                    <input type="text" id="otr" required>
+                </div>
+                <div class="input-group">
+                    <label>DP:</label>
+                    <input type="text" id="dp" required>
+                </div>
+                <div class="input-group">
+                    <label>Tenor (bulan):</label>
+                    <input type="number" id="tenor" required>
+                </div>
+                <div class="input-group">
+                    <label>Angsuran:</label>
+                    <input type="text" id="angsuran" required>
+                </div>
+                <div class="input-group">
+                    <label>No HP:</label>
+                    <input type="tel" id="noHP" required>
+                </div>
+                <div class="input-group">
+                    <label>Keterangan:</label>
+                    <textarea id="keterangan" rows="2" required></textarea>
+                </div>
+            </div>
+            <button type="submit">Generate WhatsApp Message</button>
+        </form>
+
+        <div id="output"></div>
+        <button id="copyBtn" onclick="copyOutput()">Salin Hasil</button>
+        <div class="notification" id="copyNotification">Teks berhasil disalin! 👍</div>
+    </div>
+
+    <script>
+        // Format input number dengan koma
+        function formatNumberInput(e) {
+            let input = e.target;
+            let value = input.value.replace(/\D/g, '');
+            let num = value === '' ? 0 : parseInt(value, 10);
+            input.value = num.toLocaleString('en-US');
+        }
+
+        // Event listeners untuk input number
+        document.getElementById('otr').addEventListener('input', formatNumberInput);
+        document.getElementById('dp').addEventListener('input', formatNumberInput);
+        document.getElementById('angsuran').addEventListener('input', formatNumberInput);
+
+        function generateOutput(e) {
+            e.preventDefault();
+            
+            const data = {
+                namaKonsumen: document.getElementById('namaKonsumen').value,
+                namaPasangan: document.getElementById('namaPasangan').value,
+                alamat: document.getElementById('alamat').value,
+                pekerjaan: document.getElementById('pekerjaan').value,
+                typeMotor: document.getElementById('typeMotor').value,
+                otr: document.getElementById('otr').value.replace(/,/g, ''),
+                dp: document.getElementById('dp').value.replace(/,/g, ''),
+                tenor: document.getElementById('tenor').value,
+                angsuran: document.getElementById('angsuran').value.replace(/,/g, ''),
+                noHP: document.getElementById('noHP').value,
+                keterangan: document.getElementById('keterangan').value
+            };
+
+            const outputText = `SBR GENENG:
+
+**Data Konsumen**
+Nama Konsumen: ${data.namaKonsumen}
+Nama Pas / Penj: ${data.namaPasangan}
+Pekerjaan: ${data.pekerjaan}
+Alamat: ${data.alamat}
+No HP: ${data.noHP}
+
+**Data Kendaraan**
+Type Motor: ${data.typeMotor}
+OTR: ${Number(data.otr).toLocaleString()}
+DP: ${Number(data.dp).toLocaleString()}
+Tenor: ${data.tenor} bulan
+Angsuran: ${Number(data.angsuran).toLocaleString()}
+
+Ket: ${data.keterangan}`;
+
+            const outputDiv = document.getElementById('output');
+            outputDiv.textContent = outputText;
+            outputDiv.style.display = 'block';
+            document.getElementById('copyBtn').style.display = 'inline-block';
+        }
+
+        function copyOutput() {
+            const outputText = document.getElementById('output').textContent;
+            
+            navigator.clipboard.writeText(outputText)
+                .then(() => {
+                    showNotification();
+                })
+                .catch(err => {
+                    console.error('Gagal menyalin teks:', err);
+                });
+        }
+
+        function showNotification() {
+            const notification = document.getElementById('copyNotification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
